@@ -11,10 +11,5 @@ mgr = Manager(app)
 mgr.add_command('mc', MigrateCommand)
 
 
-@app.route('/index')
-def index():
-    return 'index'
-
-
 if __name__ == '__main__':
     mgr.run()

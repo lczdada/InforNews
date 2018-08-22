@@ -3,8 +3,8 @@ from flask_migrate import Migrate
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from redis import StrictRedis
-
 from config import config_dict
+from info.modules.home import home_blu
 
 
 def create_app(config_type):  # 工厂函数
@@ -20,4 +20,6 @@ def create_app(config_type):  # 工厂函数
     Session(app)  # 初始化Session 存储对象,flask-session会自动讲session数据保存在指定的服务器端数据库里
     # 初始化迁移命令
     Migrate(app, db)
+    # 注册蓝图
+    app.register_blueprint(home_blu)
     return app
