@@ -1,10 +1,31 @@
+import logging
+from logging.handlers import RotatingFileHandler
+
 from flask import Flask
 from flask_migrate import Migrate
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from redis import StrictRedis
 from config import config_dict
-from info.modules.home import home_blu
+
+
+# 将数据库对象全局化, 方便其他文件操作数据库
+db = None  # type:SQLAlchemy
+sr = None  # type:StrictRedis
+
+
+# 设置日志文件(将日志信息写入到文件中 )
+def setup_log():
+    # 设置日志的记录等级
+    logging.basicConfig(level=logging.DEBUG)  # 测试debug级
+    # 创建日志记录器,指明日志保持路径,每个日志的最大大小,保存日志的文件上限
+    file_log_handler = RotatingFileHandler("logs/log", maxBytes=1024 * 1024 * 100, backupCount=10)
+    # 创建日志记录的格式 日志等级 输入日志信息的路径名 行数 日志信息
+    formatter = logging.Formatter('%(levelname)s %(pathname)s:%(lineno)d %(message)s')
+    # 为刚创建的日志记录器设置日志记录格式
+    file_log_handler.setFormatter(formatter)
+    # 为全局的日志工具对象(flask app使用的) 添加日志记录器
+    logging.getLogger().addHandler(file_log_handler)
 
 
 def create_app(config_type):  # 工厂函数
@@ -14,12 +35,17 @@ def create_app(config_type):  # 工厂函数
     app = Flask(__name__)
     # 根据配置类加载应用配置
     app.config.from_object(config_class)
+    # 声明全局变量
+    global db, sr
     # 创建数据库连接对象
     db = SQLAlchemy(app)
     sr = StrictRedis(host=config_class.REDIS_HOST, port=config_class.REDIS_PORT)  # 创建redis的连接对象
     Session(app)  # 初始化Session 存储对象,flask-session会自动讲session数据保存在指定的服务器端数据库里
     # 初始化迁移命令
     Migrate(app, db)
+    # 注意循环导入,切对于只用一次的内容,可以进行局部导入,什么时候用,什么时候导入
+    from info.modules.home import home_blu
     # 注册蓝图
     app.register_blueprint(home_blu)
+    setup_log()
     return app
