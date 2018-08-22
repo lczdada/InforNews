@@ -47,5 +47,9 @@ def create_app(config_type):  # 工厂函数
     from info.modules.home import home_blu
     # 注册蓝图
     app.register_blueprint(home_blu)
+    # 执行日志函数
     setup_log()
+    # 让模型文件和主程序建立关系
+    # from info.models import *  # import * 只能在module level 使用,这里是局部作用域
+    from info import models
     return app
