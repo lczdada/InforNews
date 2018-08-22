@@ -1,5 +1,4 @@
 from datetime import timedelta
-
 from redis import StrictRedis
 
 
@@ -22,3 +21,10 @@ class DevelopConfig(Config):  # 定义开发环境的配置
 
 class ProductConfig(Config):  # 定义生产环境的配置
     DEBUG = False
+
+
+# 配置字典
+config_dict = {
+    'dev': DevelopConfig,
+    'pro': ProductConfig
+}
