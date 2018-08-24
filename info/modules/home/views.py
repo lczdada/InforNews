@@ -1,17 +1,14 @@
-from flask import current_app
+from flask import render_template, current_app
 
-from info import sr
 from . import home_blu
 
 
 # 2.蓝图对象管理视图函数
 @home_blu.route('/')
 def index():
-    # logging.error('发现了一个错误')
-    # 以下方式显示效果更加友好
-    try:
-        1/0
-    except BaseException as e:
-        current_app.logger.error('发现了一个错误 %s' % e)
-    sr.set('age', '20')
-    return 'index'
+    return render_template('index.html')
+
+
+@home_blu.route('/favicon.ico')  # favicon.ico图标
+def favicon():
+    return current_app.send_static_file('news/favicon.ico')
