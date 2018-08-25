@@ -81,6 +81,17 @@ class User(BaseModel, db.Model):
         }
         return resp_dict
 
+    @property
+    def password(self):
+        raise AttributeError('计算型属性不可被调用')
+
+    @password.setter
+    def password(self, value):
+        self.password_hash = generate_password_hash(value)
+
+    def check_password_hash(self, value):
+        return check_password_hash(self.password_hash, value)
+
 
 class News(BaseModel, db.Model):
     """新闻"""

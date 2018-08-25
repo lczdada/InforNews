@@ -1,4 +1,6 @@
 # coding:utf-8
+from typing import Dict, Any, Union
+
 
 class RET:
     OK                  = "0"
@@ -37,4 +39,4 @@ error_map = {
     RET.IOERR                 : u"文件读写错误",
     RET.SERVERERR             : u"内部错误",
     RET.UNKOWNERR             : u"未知错误",
-}
+}  # type: Dict[Union[str, Any], Union[str, Any]]

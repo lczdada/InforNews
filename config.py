@@ -1,4 +1,6 @@
+import logging
 from datetime import timedelta
+
 from redis import StrictRedis
 
 
@@ -13,15 +15,17 @@ class Config:  # 自定义配置类
     SESSION_USE_SIGNER = True  # 对cookie中存储的sessionid进行加密, 需要使用秘钥
     SECRET_KEY = "dWkolpXDJYbfZlzk4BvAJzcKaTvCKV+qI4YGRmIWsJUZ3JCC19cVO7AS6JQ+RUFq4ZJ3mfm7JzUay8R7hPs3Ng=="  # 应用秘钥
     PERMANENT_SESSION_LIFETIME = timedelta(days=7)  # 默认会进行持久化,这里只需要设置时长即可
+    SQLALCHEMY_COMMIT_ON_TEARDOWN = True  # 设置数据库修改数据自动提交
 
 
 class DevelopConfig(Config):  # 定义开发环境的配置
     DEBUG = True
+    DEBUG_LEVEL = logging.DEBUG  # 日志级别
 
 
 class ProductConfig(Config):  # 定义生产环境的配置
     DEBUG = False
-
+    DEBUG_LEVEL = logging.ERROR  # 日志级别
 
 # 配置字典
 config_dict = {
