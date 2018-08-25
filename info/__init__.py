@@ -10,16 +10,16 @@ from config import config_dict
 
 
 # 将数据库对象全局化, 方便其他文件操作数据库
-
+from info.common import index_convert
 
 db = None  # type:SQLAlchemy
 sr = None  # type:StrictRedis
 
 
 # 设置日志文件(将日志信息写入到文件中 )
-def setup_log():
+def setup_log(level):
     # 设置日志的记录等级
-    logging.basicConfig(level=logging.DEBUG)  # 测试debug级
+    logging.basicConfig(level=level)  # 测试debug级
     # 创建日志记录器,指明日志保持路径,每个日志的最大大小,保存日志的文件上限
     file_log_handler = RotatingFileHandler("logs/log", maxBytes=1024 * 1024 * 100, backupCount=10)
     # 创建日志记录的格式 日志等级 输入日志信息的路径名 行数 日志信息
@@ -52,8 +52,9 @@ def create_app(config_type):  # 工厂函数
     from info.modules.passport import passport_blu
     app.register_blueprint(passport_blu)
     # 执行日志函数
-    setup_log()
+    setup_log(config_class.DEBUG_LEVEL)
     # 让模型文件和主程序建立关系
     # from info.models import *  # import * 只能在module level 使用,这里是局部作用域
     from info import models
+    app.add_template_filter(index_convert, 'index_convert')
     return app
