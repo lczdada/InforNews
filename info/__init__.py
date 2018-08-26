@@ -9,8 +9,7 @@ from redis import StrictRedis
 from config import config_dict
 
 
-# 将数据库对象全局化, 方便其他文件操作数据库
-from info.common import index_convert
+
 
 
 db = None  # type:SQLAlchemy
@@ -59,5 +58,7 @@ def create_app(config_type):  # 工厂函数
     # 让模型文件和主程序建立关系
     # from info.models import *  # import * 只能在module level 使用,这里是局部作用域
     from info import models
+    # 将数据库对象全局化, 方便其他文件操作数据库
+    from info.common import index_convert
     app.add_template_filter(index_convert, 'index_convert')
     return app
