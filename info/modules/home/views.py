@@ -34,7 +34,7 @@ def index():
     except BaseException as e:
         current_app.logger.error(e)
     # 在模板中进行替换
-    return render_template('index.html', user=user, rank_list=rank_list, categories=categories)
+    return render_template('news/index.html', user=user, rank_list=rank_list, categories=categories)
 
 
 @home_blu.route('/favicon.ico')  # favicon.ico图标

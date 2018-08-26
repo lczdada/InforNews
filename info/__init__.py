@@ -12,6 +12,7 @@ from config import config_dict
 # 将数据库对象全局化, 方便其他文件操作数据库
 from info.common import index_convert
 
+
 db = None  # type:SQLAlchemy
 sr = None  # type:StrictRedis
 
@@ -51,6 +52,8 @@ def create_app(config_type):  # 工厂函数
     app.register_blueprint(home_blu)
     from info.modules.passport import passport_blu
     app.register_blueprint(passport_blu)
+    from info.modules.news import news_blu
+    app.register_blueprint(news_blu)
     # 执行日志函数
     setup_log(config_class.DEBUG_LEVEL)
     # 让模型文件和主程序建立关系
