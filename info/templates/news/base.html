@@ -15,45 +15,50 @@
 </head>
 <body>
 <div class="header_con">
-    <div class="header">
-        <a href="#" class="logo fl"><img src="../../static/news/images/logo.png" alt="logo"></a>
-        {% block categrory %}
-        {% endblock %}
-        {% if user %}
-            <div class="user_login fr">
-                <img {% if user.avatar_url %}
-                    src="{{ user.avatar_url }}"{% else %}src="../../static/news/images/person01.png"
-                {% endif %} class="lgin_pic">
-                <a href="#" id="nick_name">{{ user.nick_name }}</a>
-                <a href="javascript:;" onclick="logout()">退出</a>
-            </div>
-        {% else %}
-            <div class="user_btns fr">
-                <a href="javascript:;" class="login_btn">登录</a> / <a href="javascript:;" class="register_btn">注册</a>
-            </div>
-        {% endif %}
-    </div>
+    {% block header_block %}
+        <div class="header">
+            <a href="{{ url_for('home.index') }}" class="logo fl"><img src="../../static/news/images/logo.png"
+                                                                       alt="logo"></a>
+            {% block categrory %}
+            {% endblock %}
+            {% if user %}
+                <div class="user_login fr">
+                    <img {% if user.avatar_url %}
+                        src="{{ user.avatar_url }}"{% else %}src="../../static/news/images/person01.png"
+                    {% endif %} class="lgin_pic">
+                    <a href="{{ url_for("user.user_info") }}" id="nick_name">{{ user.nick_name }}</a>
+                    <a href="javascript:;" onclick="logout()">退出</a>
+                </div>
+            {% else %}
+                <div class="user_btns fr">
+                    <a href="javascript:;" class="login_btn">登录</a> / <a href="javascript:;" class="register_btn">注册</a>
+                </div>
+            {% endif %}
+        </div>
+    {% endblock %}
 </div>
 
 <div class="conter_con">
     {% block content_block %}
 
     {% endblock %}
-    <div class="rank_con fr">
-        {% block author_block %}
-
-        {% endblock %}
-        <div class="rank_title">
-            <h3>点击排行</h3>
+    {% block rank_block %}
+        <div class="rank_con fr">
+            {% block author_block %}
+            {% endblock %}
+            <div class="rank_title">
+                <h3>点击排行</h3>
+            </div>
+            <ul class="rank_list">
+                {% for new in rank_list %}
+                    <li><span class={{ loop.index | index_convert }}>{{ loop.index }}</span><a
+                            href="/news/{{ new.id }}">{{ new.title }}</a></li>
+                {% endfor %}
+            </ul>
         </div>
-        <ul class="rank_list">
-            {% for new in rank_list %}
-                <li><span class={{ loop.index | index_convert }}>{{ loop.index }}</span><a
-                        href="/news/{{ new.id }}">{{ new.title }}</a></li>
-            {% endfor %}
-        </ul>
-    </div>
+    {% endblock %}
 </div>
+{% block footer_block %}
 <div class="footer">
     <div class="footer_links">
         <a href="">关于我们</a>
@@ -69,6 +74,7 @@
         电话：010-****888 京ICP备*******8号
     </p>
 </div>
+{% endblock %}
 
 <!-- 登录表单 -->
 <form class="login_form_con">

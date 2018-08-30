@@ -1,15 +1,12 @@
 import logging
 from logging.handlers import RotatingFileHandler
 
-from flask import Flask
+from flask import Flask, render_template, g
 from flask_migrate import Migrate
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from redis import StrictRedis
 from config import config_dict
-
-
-
 
 
 db = None  # type:SQLAlchemy
@@ -47,18 +44,37 @@ def create_app(config_type):  # 工厂函数
     Migrate(app, db)
     # 注意循环导入,切对于只用一次的内容,可以进行局部导入,什么时候用,什么时候导入
     from info.modules.home import home_blu
+
     # 注册蓝图
     app.register_blueprint(home_blu)
     from info.modules.passport import passport_blu
     app.register_blueprint(passport_blu)
     from info.modules.news import news_blu
     app.register_blueprint(news_blu)
+    from info.modules.user import user_blu
+    app.register_blueprint(user_blu)
+    from info.modules.admin import admin_blu
+    app.register_blueprint(admin_blu)
+
     # 执行日志函数
     setup_log(config_class.DEBUG_LEVEL)
     # 让模型文件和主程序建立关系
     # from info.models import *  # import * 只能在module level 使用,这里是局部作用域
     from info import models
-    # 将数据库对象全局化, 方便其他文件操作数据库
+
+    # 添加自定义的过滤器
     from info.common import index_convert
     app.add_template_filter(index_convert, 'index_convert')
+
+
+     # 监听404错误
+    from info.common import user_loggin_data
+    @app.errorhandler(404)
+    @user_loggin_data
+    def page_not_found(e):
+        user = g.user
+        user = user.to_dict() if user else None
+        print(e)
+        return render_template('news/404.html', user=user)
+
     return app

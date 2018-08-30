@@ -2,30 +2,78 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>404</title>
+    <title>用户概况</title>
     <link rel="stylesheet" type="text/css" href="../css/reset.css">
+    <link rel="stylesheet" type="text/css" href="../css/jquery.pagination.css">
     <link rel="stylesheet" type="text/css" href="../css/main.css">
     <script type="text/javascript" src="../js/jquery-1.12.4.min.js"></script>
     <script type="text/javascript" src="../js/main.js"></script>
+    <script type="text/javascript" src="../js/jquery.pagination.min.js"></script>
+    <script type="text/javascript" src="../js/user_follow.js"></script>
+    <script type="text/javascript" src="../js/page_control.js"></script>    
 </head>
 <body>
     <div class="header_con">
         <div class="header">
-            <a href="/" class="logo fl"><img src="../images/logo.png" alt="logo"></a>
-            <div class="user_btns fr">
-                <a href="javascript:;" class="login_btn">登录</a> / <a href="javascript:;" class="register_btn">注册</a>
+            <a href="#" class="logo fl"><img src="../images/logo.png" alt="logo"></a>
+            <div class="user_login fr" style="display: block;">
+                <img src="../images/person01.png" class="lgin_pic">
+                <a href="#">张大山</a>
+                <a href="#">退出</a>
             </div>
         </div>
     </div>
     
-    <div class="conter_con">        
-        <div class="error_con">
-            <img src="../images/not_found.png" alt="404">
-            <h3>OOPS!</h3>
-            <h4>该内容不存在</h4>
-            <p>请检查你输入的网址是否正确，请点击以下按钮返回主页或者发送错误报告</p>
-            <a href="../../../templates/news/index.html">返回首页</a>
-        </div>            
+    <div class="conter_con">
+        <div class="user_menu_con fl">
+            <div class="user_center_pic">
+                <img src="../images/user_pic.png" alt="用户图片">
+            </div>
+            <div class="user_center_name">用户李思</div>
+
+            <ul class="other_detail">
+                <li>性 别：女</li>
+                <li>签 名：这个人很懒，什么都没留下</li>
+            </ul>
+            
+            <div class="focus_other">
+                <a href="javascript:;" class="focus">关注</a>
+        <a href="javascript:;" class="focused"><span class="out">已关注</span><span class="over">取消关注</span></a>
+            </div>            
+
+        </div>
+
+        <div class="user_con fr">
+            <div class="other_collect">
+                <h3>他的文章</h3>
+                <ul class="article_list">
+                    <li><a href="#">智能音箱“不智能”：这次轮到三星语音助手Bixby被吐槽了</a><span>2018-1-17</span></li>
+                    <li><a href="#">智能音箱“不智能”：这次轮到三星语音助手Bixby被吐槽了</a><span>2018-1-17</span></li>
+                    <li><a href="#">智能音箱“不智能”：这次轮到三星语音助手Bixby被吐槽了</a><span>2018-1-17</span></li>
+                    <li><a href="#">智能音箱“不智能”：这次轮到三星语音助手Bixby被吐槽了</a><span>2018-1-17</span></li>
+                    <li><a href="#">智能音箱“不智能”：这次轮到三星语音助手Bixby被吐槽了</a><span>2018-1-17</span></li>
+                    <li><a href="#">智能音箱“不智能”：这次轮到三星语音助手Bixby被吐槽了</a><span>2018-1-17</span></li>
+                </ul>
+                
+                <div id="pagination" class="page" cur_page="1" total_page="1" source="/user/othor"></div>
+            </div>
+
+        </div>        
+    </div>
+    <div class="footer">        
+        <div class="footer_links">
+            <a href="">关于我们</a>
+            <span>|</span>
+            <a href="">联系我们</a>
+            <span>|</span>
+            <a href="">招聘人才</a>
+            <span>|</span>
+            <a href="">友情链接</a>
+        </div>
+        <p class="copyright">
+            CopyRight © 2018 新经资讯信息技术有限公司 All Rights Reserved<br />
+电话：010-****888    京ICP备*******8号
+        </p>
     </div>
     
     <!-- 登录表单 -->
