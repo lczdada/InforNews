@@ -1,11 +1,13 @@
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from flask import request, render_template, current_app, session, url_for, redirect, g
 
 from info.common import user_loggin_data
+from info.constants import ADMIN_USER_PAGE_MAX_COUNT
 from info.models import User
 from info.modules.admin import admin_blu
+
 
 # 管理员登录
 @admin_blu.route('/login', methods=['GET', 'POST'])
@@ -83,7 +85,6 @@ def user_count():
     except BaseException as e:
         current_app.logger.error(e)
 
-
     # 日新增
     day_count = 0
     # 构建日期字符串
@@ -91,14 +92,69 @@ def user_count():
     # 日期字符串可以转换为日期对象
     date_day = datetime.strptime(date_day_str, "%Y-%m-%d")
     try:
-        day_count = User.query.filter(User.is_admin == False, User.create_time >= date_mon).count()
+        day_count = User.query.filter(User.is_admin == False, User.create_time >= date_day).count()
     except BaseException as e:
         current_app.logger.error(e)
 
+    # 每日登录
+    # 构建日期字符串
+    # 查询的时间应该>某日0点, 切<次日0点
+
+    active_count = list()
+    active_time = list()
+    try:
+        for i in range(30):
+            begin_date = date_day - timedelta(days=i)
+            end_date = date_day + timedelta(days=1 - i)
+            one_day_count = User.query.filter(User.is_admin == False, User.last_login > begin_date,
+                                              User.last_login < end_date).count()
+            active_count.append(one_day_count)
+
+            # 将日期对象转换为字符串
+            one_day_str = begin_date.strftime("%Y-%m-%d")
+            active_time.append(one_day_str)
+    except BaseException as e:
+        current_app.logger.error(e)
+    active_time.reverse()
+    active_count.reverse()
     data = {
         'total_count': total_count,
         'mon_count': mon_count,
-        'day_count': day_count
+        'day_count': day_count,
+        'active_time': active_time,
+        'active_count': active_count
     }
 
     return render_template('admin/user_count.html', data=data)
+
+
+# 用户列表
+@admin_blu.route('/user_list')
+def user_list():
+    # 获取参数
+    page = request.args.get('p', 1)
+    # 校验参数
+    try:
+        page = int(page)
+    except BaseException as e:
+        current_app.logger.error(e)
+        page = 1  # 如果不合法参数默认为1
+
+    # 取出所有的用户传给前端
+    user_list = list()
+    total_page = 1
+
+    try:
+        pn = User.query.order_by(User.last_login.desc()).paginate(page, ADMIN_USER_PAGE_MAX_COUNT)
+        user_list = pn.items
+        total_page = pn.pages
+    except BaseException as e:
+        current_app.logger.error(e)
+
+    user_list = [user.to_admin_dict() for user in user_list]
+    data = {
+        'cur_page': page,
+        'total_page': total_page,
+    }
+
+    return render_template('admin/user_list.html', user_list=user_list, data=data)
