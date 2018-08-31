@@ -220,21 +220,6 @@ def news_review_detail():
     return render_template('admin/news_review_detail.html', news=news.to_dict())
 
 
-# # 新闻审核详情
-# @admin_blu.route('/news_review_detail<int:news_id>')
-# def news_review_detail(news_id):
-#     # 根据新闻id查询该新闻
-#     try:
-#         news = News.query.get(news_id)
-#     except BaseException as e:
-#         current_app.logger.error(e)
-#         return jsonify(errno=RET.DBERR, errmsg=error_map[RET.DBERR])
-#
-#     if not news:
-#         return abort(404)
-#
-#     return render_template('admin/news_review_detail.html', news=news.to_dict())
-
 # 新闻审核
 @admin_blu.route('/news_review_action', methods=['POST'])
 def news_review_action():
@@ -391,3 +376,48 @@ def news_edit_submit():
     return jsonify(errno=RET.OK, errmsg=error_map[RET.OK])
 
 
+# 新闻分类管理
+@admin_blu.route('/news_category', methods=['GET','POST'])
+def news_category():
+    # 查询出所有分类
+    category_list = list()
+    try:
+        category_list = Category.query.all()
+    except BaseException as e:
+        current_app.logger.error(e)
+        return abort(404)
+    # 将除 最新 之外的分类转化为字典
+    category_list = [category.to_dict() for category in category_list if category.id != 1]
+    if request.method == 'GET':
+        return render_template('admin/news_type.html', category_list=category_list)
+    else:
+        # POST
+        # 获取参数
+        category_id = request.json.get('id')
+        category_name = request.json.get('name')
+        # 检验参数
+        if not category_name:
+            return jsonify(errno=RET.PARAMERR, errmsg=error_map[RET.PARAMERR])
+        # 判断是否是已存在的名称
+        category_name_list = [category['name'] for category in category_list]
+        if category_name in category_name_list:
+            return jsonify(errno=RET.DATAEXIST, errmsg='该分类已存在')
+        # 判断是增加分类还是修改分类
+        if not category_id:
+            # 增加分类
+            # 将分类加入数据库
+            category = Category()
+            category.name = category_name
+            db.session.add(category)
+            return jsonify(errno=RET.OK, errmsg=error_map[RET.OK])
+        # 校验id
+        try:
+            category_id = int(category_id)
+        except BaseException as e:
+            current_app.logger.error(e)
+            return jsonify(errno=RET.PARAMERR, errmsg=error_map[RET.PARAMERR])
+        # 修改name
+        category = Category.query.get(category_id + 1)
+        category.name = category_name
+        db.session.add(category)
+        return jsonify(errno=RET.OK, errmsg=error_map[RET.OK])
