@@ -18,8 +18,8 @@
     <ul class="card_list_con">
         {% for author in data.author_list %}
                 <li class="author_card card_list">
-            <a href="/user/other?user_id=1" target="_blank" class="author_pic"><img src="{{ author.avatar_url }}" alt="author_pic"></a>
-            <a href="/user/other?user_id=1" target="_blank" class="author_name">{{ author.nick_name }}</a>
+            <a href="{{ url_for('user.author_detail', author_id = author.id) }}" target="_blank" class="author_pic"><img src="{{ author.avatar_url }}" alt="author_pic"></a>
+            <a href="{{ url_for('user.author_detail', author_id = author.id) }}" target="_blank" class="author_name">{{ author.nick_name }}</a>
             <div class="author_resume">{{ author.signature }}</div>
             <div class="writings"><span>总篇数</span><b>{{ author.news_count }}</b></div>
             <div class="follows"><span>粉丝</span><b>{{ author.followers_count }}</b></div>

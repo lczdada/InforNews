@@ -227,3 +227,50 @@ def comment_like():
             comment.like_count -= 1
 
     return jsonify(errno=RET.OK, errmsg=error_map[RET.OK])
+
+
+# 关注
+@news_blu.route('/followed_user', methods=['POST'])
+@user_loggin_data
+def followed_user():
+    # 判断是否登录
+    user = g.user
+    if not user:
+        return jsonify(errno=RET.SESSIONERR, errmsg=error_map[RET.SESSIONERR])
+    # 获取参数
+    user_id = request.json.get('user_id')
+    action = request.json.get('action')
+    # 校验参数
+    if not all([user_id, action]):
+        return jsonify(errno=RET.PARAMERR, errmsg=error_map[RET.PARAMERR])
+
+    try:
+        user_id = int(user_id)
+    except BaseException as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.PARAMERR, errmsg=error_map[RET.PARAMERR])
+
+    if action not in ['follow', 'unfollow']:
+        return jsonify(errno=RET.PARAMERR, errmsg=error_map[RET.PARAMERR])
+
+    # 从数据库找对应的author
+    try:
+        author = User.query.get(user_id)
+    except BaseException as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR, errmsg=error_map[RET.DBERR])
+
+    if not author:
+        return jsonify(errno=RET.NODATA, errmsg=error_map[RET.NODATA])
+
+    # 根据action执行动作
+    if action == 'follow':
+        if author not in user.followed:
+            user.followed.append(author)
+    else:
+        if author in user.followed:
+            user.followed.remove(author)
+
+    # 返回ok
+    return jsonify(errno=RET.OK, errmsg=error_map[RET.OK])
+

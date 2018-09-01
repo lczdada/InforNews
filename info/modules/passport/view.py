@@ -12,6 +12,7 @@ from info.utils.captcha.pic_captcha import captcha
 from info.utils.response_code import RET, error_map
 
 
+# 图片验证码
 @passport_blu.route('/get_img_code')  # 蓝图管理
 def get_img_code():
     """获取图片验证码"""
@@ -35,6 +36,7 @@ def get_img_code():
     return response
 
 
+# 短信验证码
 @passport_blu.route('/get_sms_code', methods=['POST'])
 def get_sms_code():
     """获取短信验证码"""
@@ -79,6 +81,7 @@ def get_sms_code():
     return jsonify(errno=RET.OK, errmsg=error_map[RET.OK])
 
 
+# 注册
 @passport_blu.route('/register', methods=['POST'])
 def register():
     """注册功能"""
@@ -116,6 +119,7 @@ def register():
     return jsonify(errno=RET.OK, errmsg=error_map[RET.OK])
 
 
+# 登录
 @passport_blu.route('/login', methods=['POST'])
 def login():
     # 获取参数
@@ -147,6 +151,7 @@ def login():
     return jsonify(errno=RET.OK, errmsg=error_map[RET.OK])
 
 
+# 登出
 @passport_blu.route('/logout')
 def logout():
     session.pop("user_id", None)

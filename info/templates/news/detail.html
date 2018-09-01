@@ -79,8 +79,8 @@
     {% block author_block %}
         {% if news.author %}
         <div class="author_card">
-        <a href="#" class="author_pic"><img src="{{ news.author.avatar_url }}" alt="author_pic"></a>
-        <a href="#" class="author_name">{{ news.author.nick_name }}</a>
+        <a href="{{ url_for('user.author_detail', author_id = news.author.id) }}" class="author_pic"><img src="{{ news.author.avatar_url }}" alt="author_pic"></a>
+        <a href="{{ url_for('user.author_detail', author_id = news.author.id) }}" class="author_name">{{ news.author.nick_name }}</a>
         <div class="author_resume">{{ news.author.signature }}</div>
         <div class="writings"><span>总篇数</span><b>{{ news.author.news_count }}</b></div>
         <div class="follows"><span>粉丝</span><b>{{ news.author.followers_count }}</b></div>

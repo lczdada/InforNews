@@ -28,91 +28,24 @@
 					<th width="15%">发布时间</th>
 					<th width="10%">管理操作</th>
 				</tr>
-				<tr>
-					<td>1</td>
-					<td class="tleft">日本史上最大IPO之一要来了：软银计划将手机业务分拆上市</td>
-					<td>2018-3-5 21:39:05</td>
+                {% for news in data.news_list %}
+                     			<tr>
+					<td>{{ loop.index }}</td>
+					<td class="tleft">{{ news.title }}</td>
+					<td>{{ news.create_time }}</td>
 					<td>
-						<a href="news_edit_detail.html" class="edit">编辑</a>
+						<a href="{{ url_for('admin.news_edit_detail', news_id=news.id) }}" class="edit">编辑</a>
 					</td>
 				</tr>
-				<tr>
-					<td>2</td>
-					<td class="tleft">日本史上最大IPO之一要来了：软银计划将手机业务分拆上市</td>
-					<td>2018-3-5 21:39:05</td>
-					<td>
-						<a href="news_edit_detail.html" class="edit">编辑</a>
-					</td>
-				</tr>					
-				<tr>
-					<td>3</td>
-					<td class="tleft">日本史上最大IPO之一要来了：软银计划将手机业务分拆上市</td>
-					<td>2018-3-5 21:39:05</td>
-					<td>
-						<a href="news_edit_detail.html" class="edit">编辑</a>
-					</td>
-				</tr>
-				<tr>
-					<td>4</td>
-					<td class="tleft">日本史上最大IPO之一要来了：软银计划将手机业务分拆上市</td>
-					<td>2018-3-5 21:39:05</td>
-					<td>
-						<a href="news_edit_detail.html" class="edit">编辑</a>
-					</td>
-				</tr>
-				<tr>
-					<td>5</td>
-					<td class="tleft">日本史上最大IPO之一要来了：软银计划将手机业务分拆上市</td>
-					<td>2018-3-5 21:39:05</td>
-					<td>
-						<a href="news_edit_detail.html" class="edit">编辑</a>
-					</td>
-				</tr>
-				<tr>
-					<td>6</td>
-					<td class="tleft">日本史上最大IPO之一要来了：软银计划将手机业务分拆上市</td>
-					<td>2018-3-5 21:39:05</td>
-					<td>
-						<a href="news_edit_detail.html" class="edit">编辑</a>
-					</td>
-				</tr>
-				<tr>
-					<td>7</td>
-					<td class="tleft">日本史上最大IPO之一要来了：软银计划将手机业务分拆上市</td>
-					<td>2018-3-5 21:39:05</td>
-					<td>
-						<a href="news_edit_detail.html" class="edit">编辑</a>
-					</td>
-				</tr>
-				<tr>
-					<td>8</td>
-					<td class="tleft">日本史上最大IPO之一要来了：软银计划将手机业务分拆上市</td>
-					<td>2018-3-5 21:39:05</td>
-					<td>
-						<a href="news_edit_detail.html" class="edit">编辑</a>
-					</td>
-				</tr>
-				<tr>
-					<td>9</td>
-					<td class="tleft">日本史上最大IPO之一要来了：软银计划将手机业务分拆上市</td>
-					<td>2018-3-5 21:39:05</td>
-					<td>
-						<a href="news_edit_detail.html" class="edit">编辑</a>
-					</td>
-				</tr>
-				<tr>
-					<td>10</td>
-					<td class="tleft">日本史上最大IPO之一要来了：软银计划将手机业务分拆上市</td>
-					<td>2018-3-5 21:39:05</td>
-					<td>
-						<a href="news_edit_detail.html" class="edit">编辑</a>
-					</td>
-				</tr>
+                {% endfor %}
+
+
+
 			</table>
 		</div>
 		
 		<div class="box">
-            <div id="pagination" class="page" cur_page="1" total_page="1" source="/admin/news_edit"></div>
+            <div id="pagination" class="page" cur_page="{{ data.cur_page }}" total_page="{{ data.total_page }}" source="{{ url_for('admin.news_edit') }}"></div>
 		</div>	
 </body>
 </html>

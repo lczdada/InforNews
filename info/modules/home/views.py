@@ -7,6 +7,7 @@ from . import home_blu
 
 
 # 2.蓝图对象管理视图函数
+# 主页
 @home_blu.route('/')
 def index():
     # 判断用户是否进行过登录
@@ -63,6 +64,7 @@ def get_news_list():
     filter_list = list()
     if cid != 1:
         filter_list.append(News.category_id == cid)
+    filter_list.append(News.status == 0)
     # 根据参数查询新闻数据 按照分类进行分页查询(生成日期倒序)
     try:
         pn = News.query.filter(*filter_list).order_by(News.create_time.desc()).paginate(cur_page, per_count)

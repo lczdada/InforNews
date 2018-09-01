@@ -2,13 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     {% block title_block %}
 
     {% endblock %}
     <link rel="stylesheet" type="text/css" href="../../static/news/css/reset.css">
+{% block link_block %}
+
+{% endblock %}
     <link rel="stylesheet" type="text/css" href="../../static/news/css/main.css">
     <script type="text/javascript" src="../../static/news/js/jquery-1.12.4.min.js"></script>
     <script type="text/javascript" src="../../static/news/js/main.js"></script>
+    <script type="text/javascript" src="../../static/news/js/csrf.js"></script>
+
     {% block script %}
 
     {% endblock %}
@@ -25,7 +31,7 @@
                 <div class="user_login fr">
                     <img {% if user.avatar_url %}
                         src="{{ user.avatar_url }}"{% else %}src="../../static/news/images/person01.png"
-                    {% endif %} class="lgin_pic">
+                    {% endif %} class="login_pic">
                     <a href="{{ url_for("user.user_info") }}" id="nick_name">{{ user.nick_name }}</a>
                     <a href="javascript:;" onclick="logout()">退出</a>
                 </div>
@@ -50,9 +56,11 @@
                 <h3>点击排行</h3>
             </div>
             <ul class="rank_list">
-                {% for new in rank_list %}
+                {% for news in rank_list %}
+                    {% if news.status == 0 %}
                     <li><span class={{ loop.index | index_convert }}>{{ loop.index }}</span><a
-                            href="/news/{{ new.id }}">{{ new.title }}</a></li>
+                            href="/news/{{ news.id }}">{{ news.title }}</a></li>
+                {% endif %}
                 {% endfor %}
             </ul>
         </div>

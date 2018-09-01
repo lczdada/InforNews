@@ -12,6 +12,7 @@ from info.utils.image_storage import upload_img
 from info.utils.response_code import RET, error_map
 
 
+# 用户信息
 @user_blu.route('/user_info')
 @user_loggin_data
 def user_info():
@@ -22,6 +23,7 @@ def user_info():
     return render_template('news/user.html', user=user)
 
 
+# 基本信息
 @user_blu.route('/base_info', methods=['GET', 'POST'])
 @user_loggin_data
 def base_info():
@@ -49,6 +51,7 @@ def base_info():
         return jsonify(errno=RET.OK, errmsg=error_map[RET.OK])
 
 
+# 图片信息
 @user_blu.route('/pic_info', methods=['GET', 'POST'])
 @user_loggin_data
 def pic_info():
@@ -234,3 +237,82 @@ def news_list():
         "total_page": total_page
     }
     return render_template('news/user_news_list.html', data=data)
+
+
+# 我的关注
+@user_blu.route('/user_follow')
+@user_loggin_data
+def user_follow():
+    # 判断是否登录
+    user = g.user
+    if not user:
+        return abort(404)
+    page = request.args.get('p', 1)
+    try:
+        page = int(page)
+    except BaseException as e:
+        current_app.logger.error(e)
+        page = 1
+
+    # 将当前用户关注的所有人传入模板中
+    author_list = list()
+    total_page = 1
+    try:
+        pn = user.followed.paginate(page, USER_COLLECTION_MAX_NEWS)
+        author_list = pn.items
+        total_page = pn.pages
+    except BaseException as e:
+        current_app.logger.error(e)
+
+    data = {
+        'author_list': [author.to_dict() for author in author_list],
+        'cur_page': page,
+        "total_page": total_page
+    }
+
+    return render_template('news/user_follow.html', data=data)
+
+
+# 作者详情
+@user_blu.route('/author_detail/<int:author_id>')
+@user_loggin_data
+def author_detail(author_id):
+    # 判断用户是否登录
+    user = g.user
+    if not user:
+        return abort(404)
+    # 获取参数
+    page = request.args.get('p', 1)
+    # 校验参数
+    try:
+        page = int(page)
+    except BaseException as e:
+        current_app.logger.error(e)
+        page = 1  # 参数不合格则默认为1
+
+    # 从数据库查找该作者信息
+    author = None
+    try:
+        author = User.query.get(author_id)
+    except BaseException as e:
+        current_app.logger.error(e)
+    if not author:
+        return abort(404)
+
+    # 从数据库查找该作者的所有文章
+    news_list = list()
+    total_page = 1
+    try:
+        pn = author.news_list.paginate(page, USER_COLLECTION_MAX_NEWS)
+        news_list = pn.items
+        total_page = pn.pages
+    except BaseException as e:
+        current_app.logger.error(e)
+
+    data = {
+        'news_list': [news.to_basic_dict() for news in news_list],
+        'total_page': total_page,
+        'cur_page': page
+    }
+    # 信息传递给前端
+    return render_template('news/other.html', author=author.to_dict(), user=user.to_dict(), news_list=news_list, data=data)
