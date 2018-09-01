@@ -57,10 +57,9 @@
             </div>
             <ul class="rank_list">
                 {% for news in rank_list %}
-                    {% if news.status == 0 %}
+
                     <li><span class={{ loop.index | index_convert }}>{{ loop.index }}</span><a
                             href="/news/{{ news.id }}">{{ news.title }}</a></li>
-                {% endif %}
                 {% endfor %}
             </ul>
         </div>
