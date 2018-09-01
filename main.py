@@ -15,7 +15,8 @@ mgr = Manager(app)
 # 添加迁移命令
 mgr.add_command('mc', MigrateCommand)
 
-# 生成超级管理员
+
+# 生成超级管理员
 @mgr.option('-u', dest='username')
 @mgr.option('-p', dest='password')
 def create_superuser(username, password):

@@ -39,7 +39,6 @@ def news_detail(news_id):  # 全局刷新,后端渲染,返回html
         if news in user.collection_news:
             is_collected = True
 
-
     # 将评论信息传送给前端
     try:
         comments = Comment.query.filter_by(news_id=news_id).order_by(Comment.create_time.desc()).all()
@@ -59,18 +58,19 @@ def news_detail(news_id):  # 全局刷新,后端渲染,返回html
         comments_list.append(comment_dict)
     # # 将评论的对象列表转字典
     # comments_list = [comment.to_dict() for comment in comments_list]
-    user = user.to_dict() if user else None   # type:User
 
-    return render_template('news/detail.html', news=news.to_dict(), user=user, rank_list=rank_list, is_collected=is_collected, comments=comments_list)
+    is_followed = False
+    if user and news.user:
+        if news.user in user.followed:
+            is_followed = True
+
+    user = user.to_dict() if user else None  # type:User
+
+    return render_template('news/detail.html', news=news.to_dict(), user=user, rank_list=rank_list,
+                           is_collected=is_collected, comments=comments_list, is_followed=is_followed)
 
 
 # 新闻收藏,是局部刷新,所以只能用前端渲染,
-# news_id
-# action collect/cancel collect
-# 请求方式 post
-# 返回参数是json
-
-
 @news_blu.route('/news_collect', methods=['POST'])
 @user_loggin_data
 def news_collect():
@@ -112,23 +112,7 @@ def news_collect():
     return jsonify(errno=RET.OK, errmsg=error_map[RET.OK])
 
 
-"""
-/news/news_comment
-评论
-
-请求参数
-news_id
-comment
-parent_id
-
-请求方式
-POST
-
-返回格式
-json
-"""
-
-
+# 评论
 @news_blu.route('/news_comment', methods=['POST'])
 @user_loggin_data
 def news_comment():
@@ -196,22 +180,7 @@ def news_comment():
     return jsonify(errno=RET.OK, errmsg=error_map[RET.OK], data=comment.to_dict())
 
 
-"""
-news/comment_like
-点赞/取消点赞
-
-请求
-POST json
-
-请求参数 
-comment_id
-action add/remove
-
-响应格式
-json
-"""
-
-
+# 点赞
 @news_blu.route('/comment_like', methods=['POST'])
 @user_loggin_data
 def comment_like():

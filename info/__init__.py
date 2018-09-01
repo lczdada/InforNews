@@ -66,9 +66,9 @@ def create_app(config_type):  # 工厂函数
     from info.common import index_convert
     app.add_template_filter(index_convert, 'index_convert')
 
-
-     # 监听404错误
+    # 监听404错误
     from info.common import user_loggin_data
+
     @app.errorhandler(404)
     @user_loggin_data
     def page_not_found(e):
